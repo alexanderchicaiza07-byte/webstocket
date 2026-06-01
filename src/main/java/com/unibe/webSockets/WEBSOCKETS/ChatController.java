@@ -1,20 +1,21 @@
 package com.unibe.webSockets.WEBSOCKETS;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
-@Controller // Anotación para indicar que esta clase es un controlador de Spring
+@Controller
 public class ChatController {
 
-    // Este método escucha mensajes enviados a "/app/chat.enviar"
-    // El prefijo "/app" ya está definido en tu WebSocketConfig
+    @Autowired
+    private MensajeRepository repository;
+
     @MessageMapping("/chat.enviar")
-    
-    // Este método reenvía el mensaje a todos los suscritos a "/topic/mensajes"
     @SendTo("/topic/mensajes")
-    public MensajeChat enviarMensaje(MensajeChat mensaje) {
-        // Aquí podrías añadir lógica extra, como guardar en base de datos
-        return mensaje;
+    public Mensaje enviarMensaje(@NonNull Mensaje mensaje) {
+        // Guardamos en PostgreSQL
+        return repository.save(mensaje);
     }
 }
